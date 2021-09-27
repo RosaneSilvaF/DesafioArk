@@ -1,6 +1,10 @@
 import json
 from django.shortcuts import render
 import requests
+import string
+import random
+
+#------------------------------------Token de acesso e variáveis globais------------------------------------------------------------------------------#
 
 URL = 'https://desenvolvimento.arkmeds.com/api/v2/'
 CONTENT_TYPE = 'application/json'
@@ -18,6 +22,8 @@ def login():
     
     return response['token']
 
+#------------------------------------Métodos dos equipamentos e empresas------------------------------------------------------------------------------#
+
 def get_empresas():
     token = login()
     response = requests.request("GET",URL + 'empresa/', headers={'Authorization':'JWT '+token, 'Content-Type': 'application/json'},data='').json()
@@ -25,6 +31,48 @@ def get_empresas():
 
 def detalhes_empresas():
     return lista_tipo('company/')
+    
+def get_equipamentos():
+    return lista_tipo('equipamentos_paginados/?empresa_id=')
+
+def chamado_equipamento():
+    equipamentos = get_equipamentos()
+    print(gerador_palavra())
+    #for equipamento in equipamentos:
+        # payload = json.dumps({
+        #     "equipamento" : equipamento['id'],
+        #     "solicitante": equipamento['proprietario']['id'],
+        #     "tipo_servico": 3,
+        #     "problema": 5,
+        #     "observacoes": gerador_texto(),
+        #     "origem_problema": 14,
+        #     "problema": 16,
+        #     "terceiros": 451
+        # })
+    return 0
+
+def empresas(request):
+    response = detalhes_empresas()
+    chamado_equipamento()
+    return render(request, 'empresas.html',{'response':response})
+
+def equipamentos(request):
+    response = get_equipamentos()
+    return render(request, 'equipamentos.html', {'response':response})
+
+#------------------------------------------------Funções auxiliares---------------------------------------------------------------------#
+
+def gerador_palavra():
+    tamanho = 10
+    chars = string.ascii_letters + string.digits
+    palavra = ''.join(random.choice(chars) for i in range(tamanho)) # palavras aleatórias de 10 letras
+    return palavra
+
+def gerador_texto():
+    tamanho = 100
+    return ' '.join(random.choice(gerador_palavra()) for i in range(tamanho))
+
+#------------------------------------Loop principal - lista empresa e equipamentos---------------------------------------------------------------------#
 
 def lista_tipo(sufixo):
     token = login()
@@ -42,14 +90,3 @@ def lista_tipo(sufixo):
                 response.append(requests.request("GET", URL + sufixo + str(id), headers={'Authorization':'JWT '+ token, 'Content-Type': CONTENT_TYPE },data='').json())
             
     return response
-    
-def get_equipamentos():
-    return lista_tipo('equipamentos_paginados/?empresa_id=')
-
-def empresas(request):
-    response = detalhes_empresas()
-    return render(request, 'empresas.html',{'response':response})
-
-def equipamentos(request):
-    response = get_equipamentos()
-    return render(request, 'equipamentos.html', {'response':response})
