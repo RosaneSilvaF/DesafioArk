@@ -35,11 +35,11 @@ def lista_tipo(sufixo):
         if i<20:
             i+=1
             id = company['id']
-            empresa = requests.request("GET", URL + sufixo + str(id), headers={'Authorization':'JWT '+ token, 'Content-Type': CONTENT_TYPE },data='').json()
+            empresa = requests.request("GET", URL + 'company/' + str(id), headers={'Authorization':'JWT '+ token, 'Content-Type': CONTENT_TYPE },data='').json()
             if(empresa['tipo'] == 5):
-                requests.request("DELETE", URL + sufixo + str(id), headers={'Authorization':'JWT '+ token, 'Content-Type': CONTENT_TYPE },data='').json()
+                requests.request("DELETE", URL + 'company/' + str(id), headers={'Authorization':'JWT '+ token, 'Content-Type': CONTENT_TYPE },data='').json()
             else:
-                response.append(empresa)
+                response.append(requests.request("GET", URL + sufixo + str(id), headers={'Authorization':'JWT '+ token, 'Content-Type': CONTENT_TYPE },data='').json())
             
     return response
     
