@@ -1,13 +1,11 @@
-import json
+from datetime import datetime
 from django.shortcuts import render
 import requests
 import string
 import random
+import json
 
 #------------------------------------Token de acesso e variáveis globais------------------------------------------------------------------------------#
-
-URL = 'https://desenvolvimento.arkmeds.com/api/v2/'
-CONTENT_TYPE = 'application/json'
 
 def login():
     url = "https://desenvolvimento.arkmeds.com/rest-auth/token-auth/"
@@ -22,11 +20,14 @@ def login():
     
     return response['token']
 
+URL = 'https://desenvolvimento.arkmeds.com/api/v2/'
+HEADER = {'Authorization': 'JWT '+ login(),'Content-Type': 'application/json'}
+
 #------------------------------------Métodos dos equipamentos e empresas------------------------------------------------------------------------------#
 
 def get_empresas():
     token = login()
-    response = requests.request("GET",URL + 'empresa/', headers={'Authorization':'JWT '+token, 'Content-Type': 'application/json'},data='').json()
+    response = requests.request("GET",URL + 'empresa/', headers=HEADER, data='').json()
     return response
 
 def detalhes_empresas():
@@ -35,25 +36,27 @@ def detalhes_empresas():
 def get_equipamentos():
     return lista_tipo('equipamentos_paginados/?empresa_id=')
 
-def chamado_equipamento():
+def chamado_equipamento(request):
+    token = login()
+    response = []
+    texto = gerador_texto()
     equipamentos = get_equipamentos()
-    print(gerador_palavra())
-    #for equipamento in equipamentos:
-        # payload = json.dumps({
-        #     "equipamento" : equipamento['id'],
-        #     "solicitante": equipamento['proprietario']['id'],
-        #     "tipo_servico": 3,
-        #     "problema": 5,
-        #     "observacoes": gerador_texto(),
-        #     "origem_problema": 14,
-        #     "problema": 16,
-        #     "terceiros": 451
-        # })
-    return 0
+    for equipamento in equipamentos: 
+        if len(equipamento['results']) != 0:
+            payload = json.dumps({
+                "equipamento" : int(equipamento['results'][0]['id']),
+                "solicitante": int(equipamento['results'][0]['proprietario']['id']),
+                "tipo_servico": 3,
+                "problema": 5,
+                "observacoes": texto,
+                "data_criacao": int(datetime.timestamp(datetime.now())),
+                "id_tipo_ordem_servico": 1
+            })
+            response.append(requests.request("POST", "https://desenvolvimento.arkmeds.com/api/v1/chamado/novo/", headers=HEADER, data=payload))
+    return render(request, 'chamados.html',{'response':response})
 
 def empresas(request):
     response = detalhes_empresas()
-    chamado_equipamento()
     return render(request, 'empresas.html',{'response':response})
 
 def equipamentos(request):
@@ -62,15 +65,18 @@ def equipamentos(request):
 
 #------------------------------------------------Funções auxiliares---------------------------------------------------------------------#
 
+# Reference : https://www.horadecodar.com.br/2021/04/15/gerar-string-com-letras-e-numeros-aleatorios-em-python/
+
 def gerador_palavra():
     tamanho = 10
     chars = string.ascii_letters + string.digits
     palavra = ''.join(random.choice(chars) for i in range(tamanho)) # palavras aleatórias de 10 letras
-    return palavra
+    return palavra + ' '
 
 def gerador_texto():
-    tamanho = 100
-    return ' '.join(random.choice(gerador_palavra()) for i in range(tamanho))
+    tamanho = 90
+    texto = ''.join(gerador_palavra() for i in range(tamanho))
+    return texto
 
 #------------------------------------Loop principal - lista empresa e equipamentos---------------------------------------------------------------------#
 
@@ -83,10 +89,10 @@ def lista_tipo(sufixo):
         if i<20:
             i+=1
             id = company['id']
-            empresa = requests.request("GET", URL + 'company/' + str(id), headers={'Authorization':'JWT '+ token, 'Content-Type': CONTENT_TYPE },data='').json()
+            empresa = requests.request("GET", URL + 'company/' + str(id), headers=HEADER, data='').json()
             if(empresa['tipo'] == 5):
-                requests.request("DELETE", URL + 'company/' + str(id), headers={'Authorization':'JWT '+ token, 'Content-Type': CONTENT_TYPE },data='').json()
+                requests.request("DELETE", URL + 'company/' + str(id), headers=HEADER, data='').json()
             else:
-                response.append(requests.request("GET", URL + sufixo + str(id), headers={'Authorization':'JWT '+ token, 'Content-Type': CONTENT_TYPE },data='').json())
+                response.append(requests.request("GET", URL + sufixo + str(id), headers=HEADER, data='').json())
             
     return response
