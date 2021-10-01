@@ -29,7 +29,7 @@ class Equipamento(models.Model):
     modelo = models.CharField(max_length=100,null=True)
     patrimonio = models.CharField(max_length=100,null=True)
     numero_serie = models.CharField(max_length=50,null=True)
-    proprietario = models.IntegerField()
+    proprietario = models.IntegerField(blank=False,null=True)
 
 class Chamado(models.Model):
     id = models.IntegerField(primary_key=True)
