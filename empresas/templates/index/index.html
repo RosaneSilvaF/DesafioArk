@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+    <head>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
+        <title>Desafio Arkmeds | Rosane</title>
+    </head>
+
+    <header>
+        <div id="titulo">Desafio Arkmeds</div>
+        <strong>
+        <a href="/">
+            <p class="opcoes">Tabelas</p>
+        </a>
+        <a href="/empresas/">
+            <p class="opcoes">Empresas</p>
+        </a>
+        <a href="/equipamentos/">
+            <p class="opcoes">Equipamentos</p>
+        </a>
+        <a href="/chamados/">
+            <p class="opcoes">Chamados</p>
+        </a>
+        </strong>
+    </header>
+
+    <body>
+        <p class="espacamento"></p>
+        <div>
+            <h2>Empresa com mais equipamentos</h2>
+            <table class="tabela-pequena" align="center">
+                <tr class="indices">
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                </tr>
+
+                <tr>
+                <td>{{empresa_id}}</td>
+                <td>{{empresa_nome}}</td>
+                <td class="qntd">{{qntd_equipos}}</td>
+                </tr>
+            </table>
+            <p class="espacamento"></p>
+            <hr>
+        </div>
+        <div>
+            <h2>Equipamento com mais chamados</h2>
+            <table class="tabela-pequena" align="center">
+                <tr>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                </tr>
+
+                <tr>
+                <td>{{nome_equipo}}</td>
+                <td class="qntd">{{qntd_chamados}}</td>
+                </tr>
+            </table>
+            <p class="espacamento"></p>
+        </div>
+        <div>
+            <hr><p><h2>Chamados</h2></p>
+            
+            <table style="width:100%">
+                <tr>
+                <th>ID</th>
+                <th>Número</th>
+                <th>Solicitante</th>
+                <th>Equipamento</th>
+                </tr>
+
+                {% for chamado in chamados %}
+                    <tr>
+                    <td>{{chamado.id}}</td>
+                    <td>{{chamado.numero_chamado}}</td>
+                    <td>{{chamado.solocitante}}</td>
+                    <td>{{chamado.equipamento}}</td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+    </body>
+</html>

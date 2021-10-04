@@ -6,6 +6,7 @@ import string
 import random
 import json
 
+# referência : https://docs.djangoproject.com/pt-br/2.2/howto/custom-management-commands/
 class Command(BaseCommand):
 
     def __init__(self):

@@ -1,0 +1,68 @@
+header{
+    background-color: rgb(0,151,169);
+    border-radius: 15px;
+    height: 150px;
+    width: 100%;
+    font-family: 'Quicksand', sans-serif;
+    color: azure;
+    text-align: center;
+}
+
+body{
+    border: 10px solid white;
+}
+
+h2{
+    text-align: center;
+}
+
+#titulo{
+    font-size: 40px;
+}
+
+.opcoes{
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    font-family: 'Montserrat', sans-serif;
+    color: azure;
+    background-color: rgb(0,151,169);
+    border: 20px solid rgb(0,151,169);
+    text-shadow: rgb(1, 133, 148);
+}
+
+table{
+    border:1px solid rgb(201, 201, 201);
+    border-radius: 15px;
+    font-family: 'Quicksand', sans-serif;
+}
+
+th{
+    color: azure;
+    text-align: center;
+    background-color: rgb(0,151,169);
+    border-radius: 30px;
+}
+
+tr:nth-child(odd) {
+    background:lightgray;
+}
+
+h2{
+    color: rgb(85,85,99);
+    font-size: 30px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.tabela-pequena{
+    text-align: left;
+    width: 50%;
+}
+
+.qntd{
+    text-align: center;
+}
+
+.espacamento{
+    border: 20px solid white;
+}
