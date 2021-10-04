@@ -14,6 +14,8 @@ Dentro da pasta do projeto, rode os seguintes comandos :
 
 ```python manage.py migrate```
 
-```python manage.py script_principal```
+```python manage.py script_geral```
 
 ```python manage.py runserver```
+
+##### obs: Rodar o script_geral pode demorar um pouco 😴 
