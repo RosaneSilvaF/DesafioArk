@@ -10,7 +10,7 @@ Projeto criado durante o período de estágio na Arkmeds com o intuito de aprimo
 ## Como rodar o projeto
 Dentro da pasta do projeto, rode os seguintes comandos :
 
-```install -r requirements.txt```
+```pip install -r requirements.txt```
 
 ```python manage.py migrate```
 
