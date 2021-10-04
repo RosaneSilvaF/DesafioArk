@@ -14,7 +14,7 @@ class Command(BaseCommand):
         self.HEADER = {'Authorization': 'JWT ' +
             self.login(), 'Content-Type': 'application/json'}
 
-    #------------------------------------Token de acesso e variáveis globais------------------------------------------------------------------------------#
+    #----------------------------------------------Token de acesso-----------------------------------------------------------------------------------------#
 
     def login(self):
         url = "https://desenvolvimento.arkmeds.com/rest-auth/token-auth/"
@@ -31,7 +31,7 @@ class Command(BaseCommand):
         return response['token']
 
 
-    #------------------------------------Funções dos equipamentos e empresas------------------------------------------------------------------------------#
+    #------------------------------------Métodos - equipamentos, empresas e chamados------------------------------------------------------------------------------#
 
 
     def get_empresas(self):
@@ -187,6 +187,38 @@ class Command(BaseCommand):
                 self.salva_chamado_bd(result)
         return filtrado
 
+    # Equipamento com maior numero de chamados
+    def mais_chamados():
+        qntd_chamados=0
+        #Lista de equipamentos que tem chamados
+        list_equipos = list(Chamado.objects.all().values('equipamento'))
+        equipamentos = []
+        for equipo in list_equipos:
+            equipamentos.append(equipo['equipamento'])
+
+        #retirada das informações
+        for nome in equipamentos:
+            if qntd_chamados < equipamentos.count(nome):
+                nome_equipo = nome
+                qntd_chamados = equipamentos.count(nome)
+        return nome_equipo, qntd_chamados
+
+    # Empresa com maior numero de equipamentos
+    def mais_equipos():
+        qntd_equipos=0
+        #Lista de ids das empresas que tem equipamentos
+        list_proprietarios = list(Equipamento.objects.all().values('proprietario'))
+        empresas = []
+        for empresa in list_proprietarios:
+            empresas.append(empresa['proprietario'])
+
+        #retirada das informações
+        for id in empresas:
+            if qntd_equipos < empresas.count(id):
+                empresa_id = id
+                qntd_equipos = empresas.count(id)
+        empresa_nome = Empresa.objects.get(id=empresa_id).nome
+        return empresa_id, qntd_equipos,empresa_nome
 
     def handle(self,*args, **options):
         self.detalhes_empresas()

@@ -1,5 +1,6 @@
 from rest_framework import generics
 from .models import Empresa,Equipamento,Chamado
+from .management.commands.script_geral import Command
 from .serializers import EmpresaSerializer,EquipamentoSerializer,ChamadoSerializer
 from django.shortcuts import render
 
@@ -17,8 +18,8 @@ class ChamadoList(generics.ListCreateAPIView):
     
 def tela_principal(request):
     chamados = Chamado.objects.all()
-    empresa_id, qntd_equipos, empresa_nome = mais_equipos()
-    nome_equipo, qntd_chamados = mais_chamados()
+    empresa_id, qntd_equipos, empresa_nome = Command.mais_equipos()
+    nome_equipo, qntd_chamados = Command.mais_chamados()
     dict = {'chamados':chamados, 
             'empresa_id':empresa_id, 
             'qntd_equipos':qntd_equipos, 
@@ -27,34 +28,3 @@ def tela_principal(request):
             'qntd_chamados' : qntd_chamados
     }
     return render(request,"index/index.html",dict)
-
-def mais_chamados():
-    qntd_chamados=0
-    #Lista de equipamentos que tem chamados
-    list_equipos = list(Chamado.objects.all().values('equipamento'))
-    equipamentos = []
-    for equipo in list_equipos:
-        equipamentos.append(equipo['equipamento'])
-
-    #retirada das informações
-    for nome in equipamentos:
-        if qntd_chamados < equipamentos.count(nome):
-            nome_equipo = nome
-            qntd_chamados = equipamentos.count(nome)
-    return nome_equipo, qntd_chamados
-
-def mais_equipos():
-    qntd_equipos=0
-    #Lista de ids das empresas que tem equipamentos
-    list_proprietarios = list(Equipamento.objects.all().values('proprietario'))
-    empresas = []
-    for empresa in list_proprietarios:
-        empresas.append(empresa['proprietario'])
-
-    #retirada das informações
-    for id in empresas:
-        if qntd_equipos < empresas.count(id):
-            empresa_id = id
-            qntd_equipos = empresas.count(id)
-    empresa_nome = Empresa.objects.get(id=empresa_id).nome
-    return empresa_id, qntd_equipos,empresa_nome
