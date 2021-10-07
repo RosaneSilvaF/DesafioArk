@@ -24,7 +24,7 @@ h2{
     text-decoration: none;
     display: inline-block;
     font-size: 20px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat Thin', sans-serif;
     color: azure;
     background-color: rgb(0,151,169);
     border: 20px solid rgb(0,151,169);
@@ -51,7 +51,7 @@ tr:nth-child(odd) {
 h2{
     color: rgb(85,85,99);
     font-size: 30px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat Thin', sans-serif;
 }
 
 .tabela-pequena{
@@ -66,3 +66,15 @@ h2{
 .espacamento{
     border: 20px solid white;
 }
+
+@font-face {
+    font-family: "Montserrat Thin";
+    src:url("css/fonts/montserrat-thin-webfont.woff2") format("woff2"),
+        url("css/fonts/montserrat-thin-webfont.woff") format("woff");
+    }
+
+@font-face {
+    font-family: "Quicksand";
+    src:url("css/fonts/quicksand-variablefont_wght-webfont.woff2") format("woff2"),
+        url("css/fonts/quicksand-variablefont_wght-webfont.woff") format("woff");
+    }

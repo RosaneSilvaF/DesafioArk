@@ -35,13 +35,11 @@ class Command(BaseCommand):
 
 
     def get_empresas(self):
-        response = requests.request(
+        return requests.request(
             "GET", self.URL + 'empresa/', headers=self.HEADER, data='').json()
-        return response
 
 
-    def detalhes_empresas(self):
-        companies = self.get_empresas()
+    def detalhes_empresas(self,companies):
         i = 0
         for company in companies:
             if i<20:
@@ -53,8 +51,7 @@ class Command(BaseCommand):
                     self.salva_empresa_bd(empresa)
 
 
-    def get_equipamentos(self):
-        companies = self.get_empresas()
+    def get_equipamentos(self,companies):
         response = []
         i=0
         for company in companies:
@@ -72,8 +69,7 @@ class Command(BaseCommand):
 
 
 
-    def get_chamados(self):
-        lista_equipamentos = self.get_equipamentos()
+    def get_chamados(self,lista_equipamentos):
         chamados = []
         for equipamento in lista_equipamentos:
             next_page = self.URL + 'chamado/?equipamento_id=' + str(equipamento['id'])
@@ -85,9 +81,8 @@ class Command(BaseCommand):
         return self.filtra_chamados(chamados)
 
 
-    def cria_chamados(self):
+    def cria_chamados(self,equipamentos):
         texto = self.gerador_texto()
-        equipamentos = self.get_equipamentos()
         for equipamento in equipamentos:
             if len(equipamento) != 0:
                 payload = json.dumps({
@@ -165,8 +160,7 @@ class Command(BaseCommand):
 
     def gerador_texto(self):
         tamanho = 90
-        texto = ''.join(self.gerador_palavra() for i in range(tamanho))
-        return texto
+        return ''.join(self.gerador_palavra() for i in range(tamanho))
 
 
     def filtra_equipamentos(self,equipamentos):
@@ -192,9 +186,7 @@ class Command(BaseCommand):
         qntd_chamados=0
         #Lista de equipamentos que tem chamados
         list_equipos = list(Chamado.objects.all().values('equipamento'))
-        equipamentos = []
-        for equipo in list_equipos:
-            equipamentos.append(equipo['equipamento'])
+        equipamentos = [equipo['equipamento'] for equipo in list_equipos]
 
         #retirada das informações
         for nome in equipamentos:
@@ -208,9 +200,7 @@ class Command(BaseCommand):
         qntd_equipos=0
         #Lista de ids das empresas que tem equipamentos
         list_proprietarios = list(Equipamento.objects.all().values('proprietario'))
-        empresas = []
-        for empresa in list_proprietarios:
-            empresas.append(empresa['proprietario'])
+        empresas = [empresa['proprietario'] for empresa in list_proprietarios]
 
         #retirada das informações
         for id in empresas:
@@ -221,7 +211,8 @@ class Command(BaseCommand):
         return empresa_id, qntd_equipos,empresa_nome
 
     def handle(self,*args, **options):
-        self.detalhes_empresas()
-        self.get_equipamentos()
-        self.cria_chamados()
-        self.get_chamados()
+        empresas = self.get_empresas()
+        equipamentos = self.get_equipamentos(empresas)
+        self.detalhes_empresas(empresas)
+        self.cria_chamados(equipamentos)
+        self.get_chamados(equipamentos)
