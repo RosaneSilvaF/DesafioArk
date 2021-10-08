@@ -24,7 +24,7 @@ class GeneralView(TemplateView):
         empresa_id, qntd_equipos, empresa_nome = Command.mais_equipos()
         nome_equipo, qntd_chamados = Command.mais_chamados()
         context = super(GeneralView, self).get_context_data(**kwargs)
-
+        
         context['chamados'] = Chamado.objects.all()
         context['empresa_id'] = empresa_id
         context['qntd_equipos'] = qntd_equipos

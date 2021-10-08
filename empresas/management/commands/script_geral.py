@@ -13,6 +13,16 @@ class Command(BaseCommand):
         self.URL = 'https://desenvolvimento.arkmeds.com/api/v2/'
         self.HEADER = {'Authorization': 'JWT ' +
             self.login(), 'Content-Type': 'application/json'}
+        
+        self.lista_id_empresas =[]
+        for item in list(Empresa.objects.all().values('id')):
+            self.lista_id_empresas.append(item['id'])
+        
+        self.lista_id_equipos =[]
+        for item in list(Equipamento.objects.all().values('proprietario')):
+            self.lista_id_equipos.append(item['proprietario'])
+        
+        print(self.lista_id_equipos)
 
     #----------------------------------------------Token de acesso-----------------------------------------------------------------------------------------#
 
@@ -40,10 +50,9 @@ class Command(BaseCommand):
 
 
     def detalhes_empresas(self,companies):
-        i = 0
+
         for company in companies:
-            if i<20:
-                i+=1
+            if company['id'] not in self.lista_id_empresas:
                 id = company['id']
                 empresa = requests.request(
                     "GET", self.URL + 'company/' + str(id), headers=self.HEADER, data='').json()
@@ -53,10 +62,8 @@ class Command(BaseCommand):
 
     def get_equipamentos(self,companies):
         response = []
-        i=0
         for company in companies:
-            if i<20:
-                i+=1
+            if company['id'] not in self.lista_id_equipos:
                 id = company['id']
                 # Paginação
                 next_page = self.URL + 'equipamentos_paginados/?empresa_id=' + str(id)
